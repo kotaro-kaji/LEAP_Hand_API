@@ -254,6 +254,7 @@ class DynamixelClient:
         self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION,
                         LEN_GOAL_POSITION)
 
+    #Goal Currentの書き込みですが、Control modeをCurrent Control に正しく設定しないと（アドレス11に1を書き込みしないと）、これはCurrent Limitとして受け取られます。
     def write_desired_cur(self, motor_ids: Sequence[int],
                           currents: np.ndarray):
         """Writes the given desired currents.
