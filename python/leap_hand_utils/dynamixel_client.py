@@ -9,9 +9,12 @@ import numpy as np
 
 PROTOCOL_VERSION = 2.0
 
+
 # The following addresses assume XH motors.
+
 ADDR_TORQUE_ENABLE = 64
 ADDR_GOAL_POSITION = 116
+ADDR_GOAL_CURRENT = 102
 ADDR_PRESENT_POSITION = 132
 ADDR_PRESENT_VELOCITY = 128
 ADDR_PRESENT_CURRENT = 126
@@ -25,11 +28,15 @@ LEN_PRESENT_CURRENT = 2
 LEN_PRESENT_POS_VEL_CUR = 10
 LEN_PRESENT_POS_VEL = 8 
 LEN_GOAL_POSITION = 4
+LEN_GOAL_CURRENT = 2
 
 DEFAULT_POS_SCALE = 2.0 * np.pi / 4096  # 0.088 degrees
 # See http://emanual.robotis.com/docs/en/dxl/x/xh430-v210/#goal-velocity
 DEFAULT_VEL_SCALE = 0.229 * 2.0 * np.pi / 60.0  # 0.229 rpm
-DEFAULT_CUR_SCALE = 1.34
+
+#Defalt Repository Value
+#DEFAULT_CUR_SCALE = 1.34
+DEFAULT_CUR_SCALE = 1.0
 
 
 def dynamixel_cleanup_handler():
@@ -94,6 +101,7 @@ class DynamixelClient:
             cur_scale: The scaling factor for the currents. This is
                 motor-dependent. If not provided uses the default scale.
         """
+
         import dynamixel_sdk
         self.dxl = dynamixel_sdk
 
@@ -246,6 +254,27 @@ class DynamixelClient:
         self.sync_write(motor_ids, positions, ADDR_GOAL_POSITION,
                         LEN_GOAL_POSITION)
 
+    def write_desired_cur(self, motor_ids: Sequence[int],
+                          currents: np.ndarray):
+        """Writes the given desired currents.
+
+        Args:
+            motor_ids: The motor IDs to write to.
+            currents: The currents in [mA] to write.
+        """
+        assert len(motor_ids) == len(currents)
+
+        # ドキュメントによれば、このモーターの電流単位は 1.0[mA] なので、
+        # 入力値が[mA]単位の整数であれば、スケール変換は不要です。
+        # もし入力値を[A]単位にしたい場合は、ここで変換が必要です。
+        # 例： currents_in_mA = currents * 1000
+        #
+        # 既存のcur_scale (1.34) が何のための値かは要確認です。
+        # currents = currents / self._pos_vel_cur_reader.cur_scale
+
+        # `sync_write`を電流用のパラメータで呼び出す
+        self.sync_write(motor_ids, currents, ADDR_GOAL_CURRENT,
+                        LEN_GOAL_CURRENT)
     def write_byte(
             self,
             motor_ids: Sequence[int],
@@ -284,6 +313,7 @@ class DynamixelClient:
             address: The control table address to write to.
             size: The size of the control table value being written to.
         """
+
         self.check_connected()
         key = (address, size)
         if key not in self._sync_writers:
@@ -355,6 +385,8 @@ class DynamixelClient:
     def __del__(self):
         """Automatically disconnect on destruction."""
         self.disconnect()
+
+    
 
 
 class DynamixelReader:
