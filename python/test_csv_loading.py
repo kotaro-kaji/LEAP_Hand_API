@@ -66,7 +66,9 @@ class TestLeapNode:
                 csv_reader = csv.DictReader(file)
                 for row in csv_reader:
                     motor_id = int(row['motor_id'])
-                    current_limit = int(row['current_limit'])
+                    # 安全のため、0-250の範囲に制限し、int型に変換
+                    current_limit = int(float(row['current_limit']))
+                    current_limit = max(0, min(250, current_limit))  # 0-250の範囲に制限
                     new_limits_dict[motor_id] = current_limit
             
             # 変更があった場合のみモーターに設定
@@ -109,7 +111,7 @@ def test_csv_format():
             motor_ids = set()
             for row in csv_reader:
                 motor_id = int(row['motor_id'])
-                current_limit = int(row['current_limit'])
+                current_limit = int(float(row['current_limit']))
                 description = row['description']
                 
                 if motor_id in motor_ids:
@@ -118,8 +120,10 @@ def test_csv_format():
                 
                 motor_ids.add(motor_id)
                 
-                if current_limit < 0 or current_limit > 1000:
-                    print(f"WARNING: Unusual current_limit {current_limit} for motor {motor_id}")
+                # 安全制限のチェック
+                original_limit = float(row['current_limit'])
+                if original_limit < 0 or original_limit > 250:
+                    print(f"WARNING: Current limit {original_limit} for motor {motor_id} will be clamped to 0-250 range")
                 
                 print(f"Motor {motor_id}: {current_limit}mA - {description}")
             

@@ -92,7 +92,9 @@ class LeapNode:
                 csv_reader = csv.DictReader(file)
                 for row in csv_reader:
                     motor_id = int(row['motor_id'])
-                    current_limit = int(row['current_limit'])
+                    # 安全のため、0-250の範囲に制限し、int型に変換
+                    current_limit = int(float(row['current_limit']))
+                    current_limit = max(0, min(250, current_limit))  # 0-250の範囲に制限
                     new_limits_dict[motor_id] = current_limit
             
             # 変更があった場合のみモーターに設定

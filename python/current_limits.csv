@@ -11,7 +11,7 @@ motor_id,current_limit,description
 9,10,Ring MCP Forward
 10,10,Ring PIP
 11,10,Ring DIP
-12,10,Thumb MCP Side
+12,20,Thumb MCP Side
 13,10,Thumb MCP Forward
 14,10,Thumb PIP
 15,10,Thumb DIP
