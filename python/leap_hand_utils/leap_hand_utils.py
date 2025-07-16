@@ -38,7 +38,8 @@ def unscale(x, lower, upper):
 #-----------------------------------------------------------------------------------
 #Isaac has custom ranges from -1 to 1 so we convert that to LEAPHand real world
 def sim_ones_to_LEAPhand(joints, hack_thumb = False):
-    sim_min, sim_max = LEAPsim_limits(type = hack_thumb)
+    #sim_min, sim_max = LEAPsim_limits(type = hack_thumb)
+    sim_min, sim_max = LEAPsim_limits()
     joints = scale(joints, sim_min, sim_max)
     joints = LEAPsim_to_LEAPhand(joints)
     return joints

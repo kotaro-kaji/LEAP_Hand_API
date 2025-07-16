@@ -26,7 +26,7 @@ class LeapNode:
         ####Some parameters
         # I recommend you keep the current limit from 350 for the lite, and 550 for the full hand
         # Increase KP if the hand is too weak, decrease if it's jittery.
-        self.kP = 600
+        self.kP = 1
         self.kI = 0
         self.kD = 200
         self.curr_lim = 350  ##set this to 550 if you are using full motors!!!!
@@ -36,7 +36,7 @@ class LeapNode:
         # For example: /dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT7W91VW-if00-port0
         self.motors = motors = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15]
         try:
-            self.dxl_client = DynamixelClient(motors, '/dev/ttyUSB0', 4000000)
+            self.dxl_client = DynamixelClient(motors, '/dev/serial/by-id/usb-FTDI_USB__-__Serial_Converter_FT8ISOJL-if00-port0', 4000000)
             self.dxl_client.connect()
         except Exception:
             try:
@@ -97,6 +97,16 @@ def main(**kwargs):
         leap_hand.set_allegro(np.zeros(16))
         print("Position: " + str(leap_hand.read_pos()))
         time.sleep(0.03)
+
+def main2(**kwargs):
+    leap_hand = LeapNode()
+    while True:
+        #Set to an open pose and read the joint angles 33hz
+        #leap_hand.set_leap(np.array([0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1]))
+        leap_hand.set_allegro(np.zeros(16))
+        print("Position: " + str(leap_hand.read_pos()))
+        time.sleep(0.03)
+
 
 if __name__ == "__main__":
     main()
