@@ -1,0 +1,17 @@
+motor_id,current_limit,description
+0,15,Index MCP Side - Modified
+1,20,Index MCP Forward - Modified
+2,25,Index PIP - Modified
+3,10,Index DIP
+4,10,Middle MCP Side
+5,10,Middle MCP Forward
+6,10,Middle PIP
+7,10,Middle DIP
+8,10,Ring MCP Side
+9,10,Ring MCP Forward
+10,10,Ring PIP
+11,10,Ring DIP
+12,10,Thumb MCP Side
+13,10,Thumb MCP Forward
+14,10,Thumb PIP
+15,10,Thumb DIP
