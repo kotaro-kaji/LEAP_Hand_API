@@ -105,7 +105,10 @@ def main(**kwargs):
     while True:
         #Set to an open pose and read the joint angles 33hz
         leap_hand.set_allegro(np.zeros(16))
-        print("Position: " + str(leap_hand.read_pos()))
+        position = leap_hand.read_pos()
+        current = leap_hand.read_cur()
+        print("Position: " + str(position))
+        print("Current: " + str(current))
         time.sleep(0.03)
 
 if __name__ == "__main__":
